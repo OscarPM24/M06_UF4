@@ -1,0 +1,18 @@
+#tasca {
+    color:black;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 5%;
+}
+
+.tascaNoCompletada {
+    background-color:turquoise;
+    
+}
+
+.tascaCompletada {
+    text-decoration: line-through;
+    background-color: lime;
+    
+}
+
