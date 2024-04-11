@@ -1,18 +1,26 @@
 import React from 'react'
 import { SlClose } from "react-icons/sl";
-import './Tasca.css'
+import { useState } from 'react';
+import './Tasca.css';
 
 function Tasca(props) {
 
-    let taskClass = props.completada == true ? "tascaCompletada" : "tascaNoCompletada";
-    
+    const[taskClass, setTaskClass]= useState('tascaNoCompletada');
 
+    const eliminarTasca = () => {
+        props.funcEliminarTasca(props.id);
+    }
+
+    const completarTasca = () => {
+        props.funcCompletarTasca(props.id);
+        props.completada == false ? setTaskClass('tascaCompletada') : setTaskClass('tascaNoCompletada');
+    }
+    
     return (
         <>
-            <div id={props.id} className={taskClass}>
-                <h2>{props.titol}<SlClose></SlClose></h2>
+            <div id="tasca" className={taskClass}>
+                <h2 onClick={completarTasca}>{props.titol}</h2><SlClose onClick={eliminarTasca}></SlClose>
             </div>
-            
         </>       
     )
 }

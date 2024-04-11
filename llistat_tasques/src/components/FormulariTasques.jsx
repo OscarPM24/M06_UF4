@@ -12,11 +12,14 @@ function FormulariTasques(props) {
 
     const enviarForm = e => {
         e.preventDefault();
-        const tascaNova= {
-            titol: textTasca,
-            completada: false
+        if (textTasca != "") {
+            const tascaNova = {
+                titol: textTasca,
+                completada: false,
+                id: props.idTasca
+            }
+            props.funcAfegirTasca(tascaNova);
         }
-        props.funcAfegirTasca(tascaNova);
     }
 
     return (
