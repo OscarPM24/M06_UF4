@@ -51,8 +51,11 @@ async function showFavs(){
     movies.forEach(movie => printMovie(movie, true, false));
 }
 
-async function searchMovies(query){
-    moviesResult.innerHTML="";
+async function searchMovies(query, clear){
+    if (clear) {
+        moviesResult.innerHTML="";
+        current_page = 1;
+    }
     clearInput();
     removeActive();
     lastQuery = query;
@@ -64,15 +67,16 @@ async function searchMovies(query){
           Authorization: keys.auth_token
         }
     };
-    let url = `https://api.themoviedb.org/3/search/movie?query=${query}`;
+    document.getElementById("loading").hidden = false;
+    let url = `https://api.themoviedb.org/3/search/movie?query=${query}&page=${current_page}`;
     let response = await fetch(url, options);
     let data = await response.json();
 
     console.log(data)
     total_pages = data.total_pages;
 
-
     let movies = data.results;
+    document.getElementById("loading").hidden = true;
     movies.forEach(async movie => {
         let url = `https://api.themoviedb.org/3/movie/${movie.id}/account_states`;
         let response = await fetch(url, options);
@@ -108,12 +112,12 @@ document.getElementById("showWatch").addEventListener("click", function(){
 // Intro a l'input
 document.getElementById("search").addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-        searchMovies(this.value);
+        searchMovies(this.value, true);
     }
 });
 
 // Click a la lupa
-document.querySelector(".searchBar i").addEventListener("click", ()=>searchMovies(document.getElementById("search").value));
+document.querySelector(".searchBar i").addEventListener("click", ()=>searchMovies(document.getElementById("search").value, true));
 
 // Netejar l'input
 document.getElementById("search").addEventListener('click', ()=>clearInput()); 
@@ -145,8 +149,8 @@ function printMovie(movie, fav, watch){
 // Scroll infinit
 window.addEventListener('scroll', () => {
     const {scrollTop, scrollHeight,clientHeight} = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 5 && current_page<total_pages) {
+    if (scrollTop + clientHeight >= scrollHeight - 1 && current_page<total_pages) {
         current_page++;
-        searchMovies(lastQuery)
+        searchMovies(lastQuery, false)
     }
 });
