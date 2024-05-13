@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 function Card(props) {
+    console.log(props.image)
     return (
         <>
             <img src={props.image} />
