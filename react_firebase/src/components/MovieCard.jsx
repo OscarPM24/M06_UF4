@@ -1,41 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { collection, query, getDocs } from 'firebase/firestore';
+import { CiTrash } from "react-icons/ci";
+import { collection, doc, deleteDoc} from 'firebase/firestore';
 import db from '../config/config'; 
-<link rel="stylesheet" href="/styles/MovieCard.css" />
 
-function MovieCard() {
-    const [movies, setMovies] = useState([]);
+import "./styles/MovieCard.css"
 
-    useEffect(() => {
-        const getMovies = async () => {
-            const peliculesRef = collection(db, 'pelicules');
-            const q = query(peliculesRef);
+function MovieCard(props) {
+
+    console.log(props)
+    const deletePelicula = async (id) => {
+        console.log(id)
+        if (confirm("Segur que vols eliminar aquesta pelicula?")) {
             try {
-                const querySnapshot = await getDocs(q);
-                const movies = [];
-                querySnapshot.forEach((doc) => {
-                    movies.push(doc.data());
-                });
-                setMovies(movies);
+                const peliculesRef = collection(db, 'pelicules')
+                await deleteDoc(doc(peliculesRef, id));
+                console.log("Esborrat pelicula");
+                location.reload();
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error: ', error);
             }
-        }
-        getMovies();
-    }, []); 
+        }        
+    }
 
     return (
         <>
-            {movies.map((movie, index) => (
-                <div key={index}>
-                    <p>{movie.title}</p>
-                    <img src={movie.image}/>
-                    <p>{movie.description}</p>
-                    <p>{movie.direction}</p>
-                    <p>{movie.rate}/5</p>
-                    <p>{movie.duration} minuts</p>
+            <figure className="movie">
+                <div className="movie__hero">
+                    <img src={props.image} className="movie__img" />
                 </div>
-            ))}
+                <div className="movie__content">
+                    <div className="movie__title">
+                        <h1 className="heading__primary">{props.title}</h1>
+                        <div className="movie__tag movie__tag--1">{props.rate}/5</div>
+                    </div>
+                    <p className="movie__description">{props.description}</p>
+                    <div className="movie__details">
+                        <p className="movie__detail">{props.direction}</p>
+                        <p className="movie__detail">{props.duration}min</p>
+                    </div>
+                </div>
+                <button className='delete' onClick={() => deletePelicula(props.id)}><CiTrash size={32} /></button>
+            </figure>
         </>
     );
 }
